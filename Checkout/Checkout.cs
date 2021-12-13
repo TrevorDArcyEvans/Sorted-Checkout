@@ -1,9 +1,8 @@
-﻿using System.Linq;
-
-namespace Checkout
+﻿namespace Checkout
 {
   using System;
   using System.Collections.Generic;
+  using System.Linq;
 
   public sealed class Checkout
   {
@@ -65,11 +64,12 @@ namespace Checkout
       var closestQty = itemPrices.Keys
         .OrderByDescending(x => x)
         .First(x => x < qty);
-      
+
       // work out how many items left to price from exact match qty
       var diffQty = qty - closestQty;
 
-      // recursively calculate price until there are no more items left to price
+      // recursively calculate price for remaining items
+      // until there are no more items left to price
       // NOTE:  assumes that at least a single item can be bought
       //        ie we have pricing for a single item
       var price = itemPrices[closestQty] + LineItemPrice(sku, diffQty);

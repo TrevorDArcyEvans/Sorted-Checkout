@@ -1,17 +1,19 @@
-using System.Collections.Generic;
-
 namespace Checkout.Tests
 {
   using System;
+  using System.Collections.Generic;
   using FluentAssertions;
   using NUnit.Framework;
 
   public sealed class Checkout_Tests
   {
+    private IDictionary<string, IDictionary<int, decimal>> _pricing;
+
     [SetUp]
     public void Setup()
     {
-      _pricing.Clear();
+      _pricing = new Dictionary<string, IDictionary<int, decimal>>();
+
       _pricing.Add("sku", new Dictionary<int, decimal>
       {
         { 1, 9.99m }
@@ -54,7 +56,7 @@ namespace Checkout.Tests
       {
         checkout.Add(sku);
       }
-      catch (Exception)
+      catch
       {
       }
 
@@ -173,11 +175,11 @@ namespace Checkout.Tests
       // 1@0.50 + 1@0.50 = 1.00
       checkout.Add("A99");
       checkout.Add("A99");
-      
+
       // 2@0.45 = 0.45
       checkout.Add("B15");
       checkout.Add("B15");
-      
+
       // 1@0.60 + 1@0.60 = 1.20
       checkout.Add("C40");
       checkout.Add("C40");
@@ -201,7 +203,7 @@ namespace Checkout.Tests
       checkout.Add("A99");
       checkout.Add("A99");
       checkout.Add("A99");
-      
+
       // 1@0.30 + 2@0.45 = 0.75
       checkout.Add("B15");
       checkout.Add("B15");
@@ -214,7 +216,5 @@ namespace Checkout.Tests
     }
 
     private Checkout Create() => new(_pricing);
-
-    private IDictionary<string, IDictionary<int, decimal>> _pricing = new Dictionary<string, IDictionary<int, decimal>>();
   }
 }

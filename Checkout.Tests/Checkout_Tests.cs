@@ -223,6 +223,6 @@ namespace Checkout.Tests
         .Be(4.55m);
     }
 
-    private Checkout Create() => new(new(_pricing));
+    private Checkout Create() => new(new PriceCalculator(_pricing));
   }
 }

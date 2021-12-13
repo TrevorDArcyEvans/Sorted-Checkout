@@ -9,10 +9,10 @@
     private readonly Dictionary<string, int> _basket = new();
 
     // [SKU] --> [qty, total-price]
-    private readonly PriceCalculator _priceCalculator;
+    private readonly IPriceCalculator _priceCalculator;
 
     public Checkout(
-      PriceCalculator priceCalculator)
+      IPriceCalculator priceCalculator)
     {
       _priceCalculator = priceCalculator;
     }

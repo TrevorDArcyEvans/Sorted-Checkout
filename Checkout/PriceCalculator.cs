@@ -4,7 +4,7 @@ namespace Checkout
   using System.Collections.Generic;
   using System.Linq;
 
-  public sealed class PriceCalculator
+  public sealed class PriceCalculator : IPriceCalculator
   {
     // [SKU] --> [qty, total-price]
     private readonly IDictionary<string, IDictionary<int, decimal>> _pricing;

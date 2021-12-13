@@ -22,3 +22,6 @@ Thanks for the opportunity to do this technical test.
 * factor out price calculation into a separate module and inject into _Checkout_
   * this could defer raising an error about missing SKUs to when _TotalPrice_ is calculated
   * this would also mean that _Checkout_ would not have to check for missing SKUs
+* revise type of _Basket_ as this currently leaks implementation details (`Disctionary`)
+
+

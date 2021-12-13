@@ -10,7 +10,7 @@ namespace Checkout
     // [SKU] --> [qty]
     private readonly Dictionary<string, int> _basket = new();
 
-    // [SKU] --> [qty, unit-price]
+    // [SKU] --> [unit-price]
     private readonly IDictionary<string, decimal> _pricing;
 
     public Checkout(

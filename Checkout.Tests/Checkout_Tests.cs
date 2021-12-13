@@ -7,32 +7,40 @@ namespace Checkout.Tests
 
   public sealed class Checkout_Tests
   {
-    private IDictionary<string, IDictionary<int, decimal>> _pricing;
+    private IPricing _pricing;
 
     [SetUp]
     public void Setup()
     {
-      _pricing = new Dictionary<string, IDictionary<int, decimal>>();
-
-      _pricing.Add("sku", new Dictionary<int, decimal>
+      var skuItemPricing = new ItemPricing(new Dictionary<int, decimal>
       {
         { 1, 9.99m }
       });
 
-      _pricing.Add("A99", new Dictionary<int, decimal>
+      var a99ItemPricing = new ItemPricing(new Dictionary<int, decimal>
       {
         { 1, 0.50m },
         { 3, 1.30m },
         { 6, 2.00m },
       });
-      _pricing.Add("B15", new Dictionary<int, decimal>
+
+      var b15 = new ItemPricing(new Dictionary<int, decimal>
       {
         { 1, 0.30m },
         { 2, 0.45m }
       });
-      _pricing.Add("C40", new Dictionary<int, decimal>
+
+      var c40ItemPricing = new ItemPricing(new Dictionary<int, decimal>
       {
         { 1, 0.60m }
+      });
+ 
+      _pricing = new Pricing(new Dictionary<string, IItemPricing>
+      {
+        { "sku", skuItemPricing },
+        { "A99", a99ItemPricing },
+        { "B15", b15 },
+        {"C40",c40ItemPricing}
       });
     }
 

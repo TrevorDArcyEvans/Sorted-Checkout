@@ -1,22 +1,21 @@
 namespace Checkout
 {
   using System;
-  using System.Collections.Generic;
   using System.Linq;
 
   public sealed class PriceCalculator : IPriceCalculator
   {
     // [SKU] --> [qty, total-price]
-    private readonly IDictionary<string, IDictionary<int, decimal>> _pricing;
+    private readonly IPricing _pricing;
 
-    public PriceCalculator(IDictionary<string, IDictionary<int, decimal>> pricing)
+    public PriceCalculator(IPricing pricing)
     {
       _pricing = pricing;
     }
 
     public decimal TotalPrice(IBasket basket)
     {
-      if (basket.SKUs.Any(sku => !_pricing.ContainsKey(sku)))
+      if (basket.SKUs.Any(sku => !_pricing.SKUs.Contains(sku)))
       {
         throw new ArgumentOutOfRangeException("Unknown SKU");
       }
@@ -26,16 +25,16 @@ namespace Checkout
 
     private decimal LineItemPrice(string sku, int qty)
     {
-      var itemPrices = _pricing[sku];
+      var itemPrices = _pricing.ItemPricing(sku);
 
-      if (itemPrices.ContainsKey(qty))
+      if (itemPrices.Quantities.Contains(qty))
       {
         // found an exact match for this qty
-        return itemPrices[qty];
+        return itemPrices.TotalPrice(qty);
       }
 
       // get closest exact match
-      var closestQty = itemPrices.Keys
+      var closestQty = itemPrices.Quantities
         .OrderByDescending(x => x)
         .First(x => x < qty);
 
@@ -46,7 +45,7 @@ namespace Checkout
       // until there are no more items left to price
       // NOTE:  assumes that at least a single item can be bought
       //        ie we have pricing for a single item
-      var price = itemPrices[closestQty] + LineItemPrice(sku, diffQty);
+      var price = itemPrices.TotalPrice(closestQty) + LineItemPrice(sku, diffQty);
 
       return price;
     }

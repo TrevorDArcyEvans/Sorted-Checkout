@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace Checkout.Tests
 {
   using System;
@@ -6,11 +8,18 @@ namespace Checkout.Tests
 
   public sealed class Checkout_Tests
   {
+    [SetUp]
+    public void Setup()
+    {
+      _pricing.Clear();
+      _pricing.Add("sku", new Dictionary<int, decimal>());
+    }
+
     [TestCase("")]
     [TestCase(null)]
     public void Add_InvalidSku_ThrowsException(string sku)
     {
-      var checkout = new Checkout();
+      var checkout = Create();
 
       Action act = () => checkout.Add(sku);
 
@@ -21,7 +30,7 @@ namespace Checkout.Tests
     [TestCase(null)]
     public void Add_InvalidSku_DoesNotAddToBasket(string sku)
     {
-      var checkout = new Checkout();
+      var checkout = Create();
 
       try
       {
@@ -37,7 +46,7 @@ namespace Checkout.Tests
     [Test]
     public void Add_ValidSku_AddsToBasket()
     {
-      var checkout = new Checkout();
+      var checkout = Create();
 
       checkout.Add("sku");
 
@@ -50,7 +59,7 @@ namespace Checkout.Tests
     [Test]
     public void Add_ValidSku_UpdatesQuantity()
     {
-      var checkout = new Checkout();
+      var checkout = Create();
 
       checkout.Add("sku");
 
@@ -62,7 +71,7 @@ namespace Checkout.Tests
     [Test]
     public void Add_ValidSkuTwice_AddsToBasketOnce()
     {
-      var checkout = new Checkout();
+      var checkout = Create();
 
       checkout.Add("sku");
       checkout.Add("sku");
@@ -76,7 +85,7 @@ namespace Checkout.Tests
     [Test]
     public void Add_ValidSkuTwice_IncrementsQuantity()
     {
-      var checkout = new Checkout();
+      var checkout = Create();
 
       checkout.Add("sku");
       checkout.Add("sku");
@@ -85,5 +94,19 @@ namespace Checkout.Tests
         .Should()
         .Be(2);
     }
+
+    [Test]
+    public void Add_UnknownSku_ThrowsException()
+    {
+      var checkout = Create();
+
+      Action act = () => checkout.Add("abcd");
+
+      act.Should().Throw<ArgumentOutOfRangeException>();
+    }
+
+    private Checkout Create() => new(_pricing);
+
+    private IDictionary<string, IDictionary<int, decimal>> _pricing = new Dictionary<string, IDictionary<int, decimal>>();
   }
 }

@@ -117,11 +117,15 @@ namespace Checkout.Tests
     }
 
     [Test]
-    public void Add_UnknownSku_ThrowsException()
+    public void TotalPrice_UnknownSku_ThrowsException()
     {
       var checkout = Create();
 
-      Action act = () => checkout.Add("abcd");
+      Action act = () =>
+      {
+        checkout.Add("abcd");
+        _ = checkout.TotalPrice;
+      };
 
       act.Should().Throw<ArgumentOutOfRangeException>();
     }
@@ -219,6 +223,6 @@ namespace Checkout.Tests
         .Be(4.55m);
     }
 
-    private Checkout Create() => new(_pricing);
+    private Checkout Create() => new(new(_pricing));
   }
 }

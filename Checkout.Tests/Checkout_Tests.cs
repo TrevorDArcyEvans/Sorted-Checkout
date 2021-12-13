@@ -61,7 +61,7 @@ namespace Checkout.Tests
       {
       }
 
-      checkout.Basket.Should().BeEmpty();
+      checkout.Basket.SKUs.Should().BeEmpty();
     }
 
     [Test]
@@ -72,7 +72,7 @@ namespace Checkout.Tests
       checkout.Add("sku");
 
       checkout.Basket
-        .Keys
+        .SKUs
         .Should()
         .Contain("sku");
     }
@@ -84,7 +84,7 @@ namespace Checkout.Tests
 
       checkout.Add("sku");
 
-      checkout.Basket["sku"]
+      checkout.Basket.Quantity("sku")
         .Should()
         .Be(1);
     }
@@ -98,7 +98,7 @@ namespace Checkout.Tests
       checkout.Add("sku");
 
       checkout.Basket
-        .Keys
+        .SKUs
         .Should()
         .OnlyContain(key => key == "sku");
     }
@@ -111,7 +111,7 @@ namespace Checkout.Tests
       checkout.Add("sku");
       checkout.Add("sku");
 
-      checkout.Basket["sku"]
+      checkout.Basket.Quantity("sku")
         .Should()
         .Be(2);
     }

@@ -14,14 +14,14 @@ namespace Checkout
       _pricing = pricing;
     }
 
-    public decimal TotalPrice(IDictionary<string, int> basket)
+    public decimal TotalPrice(IBasket basket)
     {
-      if (basket.Keys.Any(sku => !_pricing.ContainsKey(sku)))
+      if (basket.SKUs.Any(sku => !_pricing.ContainsKey(sku)))
       {
         throw new ArgumentOutOfRangeException("Unknown SKU");
       }
 
-      return basket.Keys.Sum(sku => LineItemPrice(sku, basket[sku]));
+      return basket.SKUs.Sum(sku => LineItemPrice(sku, basket.Quantity(sku)));
     }
 
     private decimal LineItemPrice(string sku, int qty)

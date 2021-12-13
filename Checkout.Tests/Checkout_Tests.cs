@@ -33,5 +33,57 @@ namespace Checkout.Tests
 
       checkout.Basket.Should().BeEmpty();
     }
+
+    [Test]
+    public void Add_ValidSku_AddsToBasket()
+    {
+      var checkout = new Checkout();
+
+      checkout.Add("sku");
+
+      checkout.Basket
+        .Keys
+        .Should()
+        .Contain("sku");
+    }
+
+    [Test]
+    public void Add_ValidSku_UpdatesQuantity()
+    {
+      var checkout = new Checkout();
+
+      checkout.Add("sku");
+
+      checkout.Basket["sku"]
+        .Should()
+        .Be(1);
+    }
+
+    [Test]
+    public void Add_ValidSkuTwice_AddsToBasketOnce()
+    {
+      var checkout = new Checkout();
+
+      checkout.Add("sku");
+      checkout.Add("sku");
+
+      checkout.Basket
+        .Keys
+        .Should()
+        .OnlyContain(key => key == "sku");
+    }
+
+    [Test]
+    public void Add_ValidSkuTwice_IncrementsQuantity()
+    {
+      var checkout = new Checkout();
+
+      checkout.Add("sku");
+      checkout.Add("sku");
+
+      checkout.Basket["sku"]
+        .Should()
+        .Be(2);
+    }
   }
 }

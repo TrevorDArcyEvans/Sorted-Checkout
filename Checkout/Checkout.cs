@@ -14,7 +14,7 @@ namespace Checkout
     private readonly IDictionary<string, IDictionary<int, decimal>> _pricing;
 
     public Checkout(
-      IDictionary<string, IDictionary<int,decimal>> pricing)
+      IDictionary<string, IDictionary<int, decimal>> pricing)
     {
       _pricing = pricing;
     }
@@ -27,7 +27,7 @@ namespace Checkout
       {
         throw new ArgumentNullException("SKU cannot be blank");
       }
-      
+
       if (!_pricing.ContainsKey(sku))
       {
         throw new ArgumentOutOfRangeException("Unknown SKU");
@@ -45,28 +45,34 @@ namespace Checkout
     {
       get
       {
-        var totalPrice = _basket.Keys.Sum(LineItemPrice);
+        var totalPrice = _basket.Keys.Sum(sku => LineItemPrice(sku, _basket[sku]));
 
         return totalPrice;
       }
     }
 
-    private decimal LineItemPrice(string sku)
+    private decimal LineItemPrice(string sku, int qty)
     {
-      var qty = _basket[sku];
       var itemPrices = _pricing[sku];
 
       if (itemPrices.ContainsKey(qty))
       {
+        // found an exact match for this qty
         return itemPrices[qty];
       }
 
+      // get closest exact match
       var closestQty = itemPrices.Keys
-        .OrderBy(x => x)
+        .OrderByDescending(x => x)
         .First(x => x < qty);
+      
+      // work out how many items left to price from exact match qty
       var diffQty = qty - closestQty;
 
-      var price = itemPrices[closestQty] + diffQty * itemPrices[1];
+      // recursively calculate price until there are no more items left to price
+      // NOTE:  assumes that at least a single item can be bought
+      //        ie we have pricing for a single item
+      var price = itemPrices[closestQty] + LineItemPrice(sku, diffQty);
 
       return price;
     }

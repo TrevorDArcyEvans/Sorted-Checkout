@@ -128,6 +128,7 @@ namespace Checkout.Tests
     {
       var checkout = Create();
 
+      // 1@0.50 = 0.50
       checkout.Add("A99");
 
       checkout.TotalPrice
@@ -140,6 +141,7 @@ namespace Checkout.Tests
     {
       var checkout = Create();
 
+      // 1@0.50 + 1@0.50 = 1.00
       checkout.Add("A99");
       checkout.Add("A99");
 
@@ -153,6 +155,7 @@ namespace Checkout.Tests
     {
       var checkout = Create();
 
+      // 3@1.30 = 1.30
       checkout.Add("A99");
       checkout.Add("A99");
       checkout.Add("A99");
@@ -167,16 +170,47 @@ namespace Checkout.Tests
     {
       var checkout = Create();
 
+      // 1@0.50 + 1@0.50 = 1.00
       checkout.Add("A99");
       checkout.Add("A99");
+      
+      // 2@0.45 = 0.45
       checkout.Add("B15");
       checkout.Add("B15");
+      
+      // 1@0.60 + 1@0.60 = 1.20
       checkout.Add("C40");
       checkout.Add("C40");
 
+      // 1.00 + 0.45 + 1.20 = 2.65 
       checkout.TotalPrice
         .Should()
         .Be(2.65m);
+    }
+
+    [Test]
+    public void TotalPrice_OptimumSplit_ReturnsExpected()
+    {
+      var checkout = Create();
+
+      // 3@1.30 + 3@1.30 + 1@0.50 = 3.10
+      checkout.Add("A99");
+      checkout.Add("A99");
+      checkout.Add("A99");
+      checkout.Add("A99");
+      checkout.Add("A99");
+      checkout.Add("A99");
+      checkout.Add("A99");
+      
+      // 1@0.30 + 2@0.45 = 0.75
+      checkout.Add("B15");
+      checkout.Add("B15");
+      checkout.Add("B15");
+
+      // 3.10 + 0.75 = 3.85
+      checkout.TotalPrice
+        .Should()
+        .Be(3.85m);
     }
 
     private Checkout Create() => new(_pricing);

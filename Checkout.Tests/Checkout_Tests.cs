@@ -22,7 +22,8 @@ namespace Checkout.Tests
       _pricing.Add("A99", new Dictionary<int, decimal>
       {
         { 1, 0.50m },
-        { 3, 1.30m }
+        { 3, 1.30m },
+        { 6, 2.00m },
       });
       _pricing.Add("B15", new Dictionary<int, decimal>
       {
@@ -195,7 +196,10 @@ namespace Checkout.Tests
     {
       var checkout = Create();
 
-      // 3@1.30 + 3@1.30 + 1@0.50 = 3.10
+      // 6@2.00 + 3@1.30 + 1@0.50 = 3.80
+      checkout.Add("A99");
+      checkout.Add("A99");
+      checkout.Add("A99");
       checkout.Add("A99");
       checkout.Add("A99");
       checkout.Add("A99");
@@ -209,10 +213,10 @@ namespace Checkout.Tests
       checkout.Add("B15");
       checkout.Add("B15");
 
-      // 3.10 + 0.75 = 3.85
+      // 3.80 + 0.75 = 4.55
       checkout.TotalPrice
         .Should()
-        .Be(3.85m);
+        .Be(4.55m);
     }
 
     private Checkout Create() => new(_pricing);

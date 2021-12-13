@@ -14,6 +14,8 @@ namespace Checkout.Tests
       _pricing.Clear();
       _pricing.Add("sku", 9.99m);
       _pricing.Add("A99", 0.50m);
+      _pricing.Add("B15", 0.30m);
+      _pricing.Add("C40", 0.60m);
     }
 
     [TestCase("")]
@@ -56,6 +58,7 @@ namespace Checkout.Tests
         .Should()
         .Contain("sku");
     }
+
 
     [Test]
     public void Add_ValidSku_UpdatesQuantity()
@@ -143,6 +146,20 @@ namespace Checkout.Tests
       checkout.TotalPrice
         .Should()
         .Be(1.50m);
+    }
+
+    [Test]
+    public void TotalPrice_MixedItem_ReturnsExpected()
+    {
+      var checkout = Create();
+
+      checkout.Add("A99");
+      checkout.Add("B15");
+      checkout.Add("C40");
+
+      checkout.TotalPrice
+        .Should()
+        .Be(1.40m);
     }
 
     private Checkout Create() => new(_pricing);

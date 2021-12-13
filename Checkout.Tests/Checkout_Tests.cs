@@ -7,43 +7,6 @@ namespace Checkout.Tests
 
   public sealed class Checkout_Tests
   {
-    private IPricing _pricing;
-
-    [SetUp]
-    public void Setup()
-    {
-      var skuItemPricing = new ItemPricing(new Dictionary<int, decimal>
-      {
-        { 1, 9.99m }
-      });
-
-      var a99ItemPricing = new ItemPricing(new Dictionary<int, decimal>
-      {
-        { 1, 0.50m },
-        { 3, 1.30m },
-        { 6, 2.00m },
-      });
-
-      var b15 = new ItemPricing(new Dictionary<int, decimal>
-      {
-        { 1, 0.30m },
-        { 2, 0.45m }
-      });
-
-      var c40ItemPricing = new ItemPricing(new Dictionary<int, decimal>
-      {
-        { 1, 0.60m }
-      });
- 
-      _pricing = new Pricing(new Dictionary<string, IItemPricing>
-      {
-        { "sku", skuItemPricing },
-        { "A99", a99ItemPricing },
-        { "B15", b15 },
-        {"C40",c40ItemPricing}
-      });
-    }
-
     [TestCase("")]
     [TestCase(null)]
     public void Add_InvalidSku_ThrowsException(string sku)
@@ -231,6 +194,40 @@ namespace Checkout.Tests
         .Be(4.55m);
     }
 
-    private Checkout Create() => new(new PriceCalculator(_pricing));
+    private Checkout Create()
+    {
+      var skuItemPricing = new ItemPricing(new Dictionary<int, decimal>
+      {
+        { 1, 9.99m }
+      });
+
+      var a99ItemPricing = new ItemPricing(new Dictionary<int, decimal>
+      {
+        { 1, 0.50m },
+        { 3, 1.30m },
+        { 6, 2.00m },
+      });
+
+      var b15 = new ItemPricing(new Dictionary<int, decimal>
+      {
+        { 1, 0.30m },
+        { 2, 0.45m }
+      });
+
+      var c40ItemPricing = new ItemPricing(new Dictionary<int, decimal>
+      {
+        { 1, 0.60m }
+      });
+
+      var pricing = new Pricing(new Dictionary<string, IItemPricing>
+      {
+        { "sku", skuItemPricing },
+        { "A99", a99ItemPricing },
+        { "B15", b15 },
+        { "C40", c40ItemPricing }
+      });
+
+      return new(new PriceCalculator(pricing));
+    }
   }
 }

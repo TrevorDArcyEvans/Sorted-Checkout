@@ -1,13 +1,12 @@
 ﻿namespace Checkout
 {
   using System;
-  using System.Collections.Concurrent;
   using System.Collections.Generic;
 
   public sealed class Checkout
   {
     // [SKU] --> [qty]
-    private readonly ConcurrentDictionary<string, int> _basket = new();
+    private readonly Dictionary<string, int> _basket = new();
 
     // [SKU] --> [qty, total-price]
     private readonly IDictionary<string, IDictionary<int, decimal>> _pricing;
@@ -40,6 +39,12 @@
       _basket[sku]++;
     }
 
-    public decimal TotalPrice => 0;
+    public decimal TotalPrice
+    {
+      get
+      {
+        return 0;
+      }
+    }
   }
 }

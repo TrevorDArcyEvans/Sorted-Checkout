@@ -12,10 +12,25 @@ namespace Checkout.Tests
     public void Setup()
     {
       _pricing.Clear();
-      _pricing.Add("sku", 9.99m);
-      _pricing.Add("A99", 0.50m);
-      _pricing.Add("B15", 0.30m);
-      _pricing.Add("C40", 0.60m);
+      _pricing.Add("sku", new Dictionary<int, decimal>
+      {
+        { 1, 9.99m }
+      });
+
+      _pricing.Add("A99", new Dictionary<int, decimal>
+      {
+        { 1, 0.50m },
+        { 3, 1.30m }
+      });
+      _pricing.Add("B15", new Dictionary<int, decimal>
+      {
+        { 1, 0.30m },
+        { 2, 0.45m }
+      });
+      _pricing.Add("C40", new Dictionary<int, decimal>
+      {
+        { 1, 0.60m }
+      });
     }
 
     [TestCase("")]
@@ -58,7 +73,6 @@ namespace Checkout.Tests
         .Should()
         .Contain("sku");
     }
-
 
     [Test]
     public void Add_ValidSku_UpdatesQuantity()
@@ -145,7 +159,7 @@ namespace Checkout.Tests
 
       checkout.TotalPrice
         .Should()
-        .Be(1.50m);
+        .Be(1.30m);
     }
 
     [Test]
@@ -154,16 +168,19 @@ namespace Checkout.Tests
       var checkout = Create();
 
       checkout.Add("A99");
+      checkout.Add("A99");
       checkout.Add("B15");
+      checkout.Add("B15");
+      checkout.Add("C40");
       checkout.Add("C40");
 
       checkout.TotalPrice
         .Should()
-        .Be(1.40m);
+        .Be(2.65m);
     }
 
     private Checkout Create() => new(_pricing);
 
-    private IDictionary<string, decimal> _pricing = new Dictionary<string, decimal>();
+    private IDictionary<string, IDictionary<int, decimal>> _pricing = new Dictionary<string, IDictionary<int, decimal>>();
   }
 }

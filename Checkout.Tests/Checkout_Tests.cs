@@ -12,7 +12,8 @@ namespace Checkout.Tests
     public void Setup()
     {
       _pricing.Clear();
-      _pricing.Add("sku", new Dictionary<int, decimal>());
+      _pricing.Add("sku", 9.99m);
+      _pricing.Add("A99", 0.50m);
     }
 
     [TestCase("")]
@@ -105,8 +106,47 @@ namespace Checkout.Tests
       act.Should().Throw<ArgumentOutOfRangeException>();
     }
 
+    [Test]
+    public void TotalPrice_OneItem_ReturnsExpected()
+    {
+      var checkout = Create();
+
+      checkout.Add("A99");
+
+      checkout.TotalPrice
+        .Should()
+        .Be(0.50m);
+    }
+
+    [Test]
+    public void TotalPrice_TwoItem_ReturnsExpected()
+    {
+      var checkout = Create();
+
+      checkout.Add("A99");
+      checkout.Add("A99");
+
+      checkout.TotalPrice
+        .Should()
+        .Be(1.00m);
+    }
+
+    [Test]
+    public void TotalPrice_ThreeItem_ReturnsExpected()
+    {
+      var checkout = Create();
+
+      checkout.Add("A99");
+      checkout.Add("A99");
+      checkout.Add("A99");
+
+      checkout.TotalPrice
+        .Should()
+        .Be(1.50m);
+    }
+
     private Checkout Create() => new(_pricing);
 
-    private IDictionary<string, IDictionary<int, decimal>> _pricing = new Dictionary<string, IDictionary<int, decimal>>();
+    private IDictionary<string, decimal> _pricing = new Dictionary<string, decimal>();
   }
 }

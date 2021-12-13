@@ -1,4 +1,6 @@
-﻿namespace Checkout
+﻿using System.Linq;
+
+namespace Checkout
 {
   using System;
   using System.Collections.Generic;
@@ -8,11 +10,11 @@
     // [SKU] --> [qty]
     private readonly Dictionary<string, int> _basket = new();
 
-    // [SKU] --> [qty, total-price]
-    private readonly IDictionary<string, IDictionary<int, decimal>> _pricing;
+    // [SKU] --> [qty, unit-price]
+    private readonly IDictionary<string, decimal> _pricing;
 
     public Checkout(
-      IDictionary<string, IDictionary<int, decimal>> pricing)
+      IDictionary<string, decimal> pricing)
     {
       _pricing = pricing;
     }
@@ -43,7 +45,9 @@
     {
       get
       {
-        return 0;
+        var totalPrice = _basket.Keys.Sum(key => _basket[key] * _pricing[key]);
+
+        return totalPrice;
       }
     }
   }
